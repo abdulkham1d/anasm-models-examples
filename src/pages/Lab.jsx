@@ -4,10 +4,12 @@ import { useSearchParams } from "react-router-dom";
 import { ORGANS, findOrgan } from "../data/organs.ts";
 import ViewerSwitch from "../components/viewer/ViewerSwitch.jsx";
 import LazyMount from "../components/viewer/LazyMount.jsx";
+import AnatomyPanel from "../components/ui/AnatomyPanel.jsx";
 import InfoSidebar from "../components/sidebar/InfoSidebar.jsx";
 import "../styles/app.css";
 import "../styles/content-pages.css";
 
+const STORAGE_KEY = "anasm_3d_unlocked";
 const YOUTUBE_EMBED =
   "https://www.youtube.com/embed/rq6PJb85C_M?autoplay=1&mute=1&loop=1&playlist=rq6PJb85C_M&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&fs=0&iv_load_policy=3";
 
@@ -34,12 +36,24 @@ function panelReducer(state, action) {
   }
 }
 
+function wasUnlockedBefore() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export default function Lab() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialOrgan = searchParams.get("organ") || ORGANS[0]?.id;
   const [currentId, setCurrentId] = React.useState(initialOrgan);
   const currentItem = React.useMemo(() => findOrgan(currentId), [currentId]);
   const [panelState, dispatch] = React.useReducer(panelReducer, initialPanel);
+
+  // One-time gate: first visit shows button, after that goes straight to 3D
+  const [unlocked, setUnlocked] = React.useState(wasUnlockedBefore);
+  const [fadeIn, setFadeIn] = React.useState(wasUnlockedBefore);
 
   const cameraInfoRef = React.useRef(null);
 
@@ -48,7 +62,6 @@ export default function Lab() {
     setSearchParams({ organ: id }, { replace: true });
   }, [setSearchParams]);
 
-  // catalog almashganda panel yopilsin
   React.useEffect(() => {
     dispatch({ type: "CLOSE" });
   }, [currentId]);
@@ -64,6 +77,17 @@ export default function Lab() {
   const handleCameraReady = React.useCallback((info) => {
     cameraInfoRef.current = info;
   }, []);
+
+  const handleUnlock = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, "1");
+    } catch { /* storage full or blocked */ }
+    setUnlocked(true);
+    // Smooth fade-in after a brief delay
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setFadeIn(true));
+    });
+  };
 
   return (
     <div className="landing">
@@ -87,7 +111,6 @@ export default function Lab() {
             allowFullScreen={false}
             loading="lazy"
           />
-          {/* Transparent overlay blocks all pointer events on the video */}
           <div className="banner-overlay" />
         </div>
       </section>
@@ -112,15 +135,48 @@ export default function Lab() {
       <main className="landing-main">
         <div className="landing-viewer">
           <div className="viewer-box">
-            <LazyMount>
-              <ViewerSwitch
-                key={currentItem ? currentItem.id : "none"}
-                item={currentItem}
-                selection={panelState.selection}
-                setSelection={setSelection}
-                onCameraReady={handleCameraReady}
-              />
-            </LazyMount>
+            {!unlocked ? (
+              /* ---- WELCOME GATE (first visit only) ---- */
+              <div className="welcome-gate">
+                <div className="welcome-content">
+                  <div className="welcome-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                  </div>
+                  <h2 className="welcome-title">3D Anatomiya</h2>
+                  <p className="welcome-desc">
+                    Interaktiv 3D modellarni yuklash uchun tugmani bosing.
+                    <br />
+                    Keyingi tashrif avtomatik yuklanadi.
+                  </p>
+                  <button className="welcome-btn" onClick={handleUnlock}>
+                    3D modellarni yuklash
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* ---- 3D VIEWER ---- */
+              <div className={`viewer-inner ${fadeIn ? "viewer-visible" : "viewer-loading"}`}>
+                <LazyMount>
+                  <ViewerSwitch
+                    key={currentItem ? currentItem.id : "none"}
+                    item={currentItem}
+                    selection={panelState.selection}
+                    setSelection={setSelection}
+                    onCameraReady={handleCameraReady}
+                  />
+                </LazyMount>
+                <AnatomyPanel
+                  state={panelState}
+                  dispatch={dispatch}
+                  cameraInfo={cameraInfoRef}
+                  organId={currentId}
+                />
+              </div>
+            )}
           </div>
         </div>
 

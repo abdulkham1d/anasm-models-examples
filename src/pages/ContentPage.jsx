@@ -79,7 +79,7 @@ export default function ContentPage() {
 
       {/* Footer */}
       <footer className="cpage-footer">
-        <span>AnaSM.uz &bull; {organ?.title} &bull; {decodedPart} &bull; {sectionLabel} &bull; {subItemLabel}</span>
+        <span>AnaSM&bull; {organ?.title} &bull; {decodedPart} &bull; {sectionLabel} &bull; {subItemLabel}</span>
       </footer>
     </div>
   );

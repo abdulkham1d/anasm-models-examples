@@ -13,7 +13,9 @@ export default function AnatomyPanel({ state, dispatch, cameraInfo, organId }) {
   const overlayRef = React.useRef(null);
   const { selection, level, activeSection } = state;
 
-  if (!selection || level === "closed") return null;
+  // Floating card only shows at "sections" level — after clicking a section,
+  // it disappears and the sidebar takes over with sub-items
+  if (!selection || level === "closed" || level === "subitems") return null;
 
   const partName = selection.name || "Noma'lum qism";
   const sectionObj = SECTIONS.find((s) => s.key === activeSection);
