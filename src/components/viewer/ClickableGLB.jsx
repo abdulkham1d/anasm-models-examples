@@ -23,24 +23,41 @@ export default function ClickableGLB({
   const { invalidate } = useThree();
   useCursor(Boolean(hovered));
 
-  // Track pointer-down position for drag detection (global — captures all downs)
-  const pointerStart = useRef({ time: 0, x: 0, y: 0 });
-  // Store the mesh hit on pointer-down (reliable for tiny meshes like skeleton)
+  // Pending selection captured on pointer-down (reliable for tiny meshes)
   const pendingHit = useRef(null);
+  // Global pointer-down coords for onPointerMissed drag detection
+  const globalStart = useRef({ time: 0, x: 0, y: 0 });
 
   const cloned = useMemo(() => scene.clone(true), [scene]);
 
-  // Global pointerdown listener so we always have start coords for drag detection
+  // Track ALL pointer-downs globally for onPointerMissed drag detection
   useEffect(() => {
     const handler = (e) => {
-      pointerStart.current = { time: Date.now(), x: e.clientX, y: e.clientY };
-      pendingHit.current = null;
+      globalStart.current = { time: Date.now(), x: e.clientX, y: e.clientY };
     };
     window.addEventListener("pointerdown", handler, true);
     return () => window.removeEventListener("pointerdown", handler, true);
   }, []);
 
-  // Collect ALL meshes from the scene — each one becomes a clickable part
+  // Window-level pointerup — always fires, confirms selection if not a drag
+  useEffect(() => {
+    const handleUp = (e) => {
+      const hit = pendingHit.current;
+      if (!hit) return;
+      pendingHit.current = null;
+
+      const dt = Date.now() - hit.time;
+      const dx = e.clientX - hit.x;
+      const dy = e.clientY - hit.y;
+      if (dt > CLICK_TIME_MS || Math.sqrt(dx * dx + dy * dy) > CLICK_DIST_PX) return;
+
+      setSelection?.(hit.selection);
+    };
+    window.addEventListener("pointerup", handleUp);
+    return () => window.removeEventListener("pointerup", handleUp);
+  }, [setSelection]);
+
+  // collect meshes & parts
   useEffect(() => {
     const list = [];
     cloned.traverse((child) => {
@@ -77,7 +94,7 @@ export default function ClickableGLB({
     invalidate();
   }, [selection, hovered, invalidate]);
 
-  // highlight only the selected mesh, fade all others
+  // highlight & fade
   useFrame(() => {
     if (!selection && !hovered) return;
     meshes.forEach(({ ref }) => {
@@ -107,54 +124,48 @@ export default function ClickableGLB({
   };
   const onOut = () => setHovered(null);
 
-  /** Was the last pointer gesture a drag (not a clean click)? */
-  const isDragGesture = (nativeEvt) => {
-    const { time, x, y } = pointerStart.current;
-    const dt = Date.now() - time;
-    const dx = (nativeEvt?.clientX ?? 0) - x;
-    const dy = (nativeEvt?.clientY ?? 0) - y;
-    return dt > CLICK_TIME_MS || Math.sqrt(dx * dx + dy * dy) > CLICK_DIST_PX;
-  };
-
-  // Capture the exact mesh on pointer down — reliable for tiny meshes like skeleton
+  // Capture exact mesh on pointer-down (same as original — reliable for skeleton)
+  // Selection is deferred to window pointerup with drag check
   const onDown = (e) => {
     e.stopPropagation();
     const obj = e.object;
-    if (obj?.userData?.__pickable) {
-      pendingHit.current = { object: obj, point: e.point };
-    }
-  };
+    if (!obj?.userData?.__pickable) return;
+    if (!setSelection) return;
 
-  // Finalize selection on pointer up, only if it wasn't a drag
-  const onUp = (e) => {
-    e.stopPropagation();
-    const hit = pendingHit.current;
-    pendingHit.current = null;
-    if (!hit || !setSelection) return;
-    if (isDragGesture(e.nativeEvent)) return;
-
-    const part = meshes.find((m) => m.ref === hit.object);
+    const part = meshes.find((m) => m.ref === obj);
     if (!part) return;
 
     const box = new THREE.Box3().setFromObject(part.ref);
     const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const center = [
+      sphere.center.x,
+      sphere.center.y,
+      sphere.center.z,
+    ];
+    const radius = sphere.radius;
 
-    setSelection({
-      id: part.id,
-      name: part.name,
-      meshName: part.meshName,
-      info: part.info,
-      bounds: {
-        center: [sphere.center.x, sphere.center.y, sphere.center.z],
-        radius: sphere.radius,
+    pendingHit.current = {
+      time: Date.now(),
+      x: e.nativeEvent?.clientX ?? 0,
+      y: e.nativeEvent?.clientY ?? 0,
+      selection: {
+        id: part.id,
+        name: part.name,
+        meshName: part.meshName,
+        info: part.info,
+        bounds: { center, radius },
+        clickPoint: [e.point.x, e.point.y, e.point.z],
       },
-      clickPoint: [hit.point.x, hit.point.y, hit.point.z],
-    });
+    };
   };
 
-  // Clear selection only on real clicks on empty space, not drags
+  // Clear selection only on real clicks, not drags
   const handleMissed = (e) => {
-    if (isDragGesture(e)) return;
+    const { time, x, y } = globalStart.current;
+    const dt = Date.now() - time;
+    const dx = (e?.clientX ?? 0) - x;
+    const dy = (e?.clientY ?? 0) - y;
+    if (dt > CLICK_TIME_MS || Math.sqrt(dx * dx + dy * dy) > CLICK_DIST_PX) return;
     setSelection?.(null);
   };
 
@@ -164,7 +175,6 @@ export default function ClickableGLB({
       onPointerMove={onMove}
       onPointerOut={onOut}
       onPointerDown={onDown}
-      onPointerUp={onUp}
       onPointerMissed={handleMissed}
       dispose={null}
     >
