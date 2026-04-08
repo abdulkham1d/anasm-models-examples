@@ -4,9 +4,12 @@ import { useSearchParams } from "react-router-dom";
 import { ORGANS, findOrgan } from "../data/organs.ts";
 import ViewerSwitch from "../components/viewer/ViewerSwitch.jsx";
 import LazyMount from "../components/viewer/LazyMount.jsx";
-import AnatomyPanel from "../components/ui/AnatomyPanel.jsx";
+import InfoSidebar from "../components/sidebar/InfoSidebar.jsx";
 import "../styles/app.css";
 import "../styles/content-pages.css";
+
+const YOUTUBE_EMBED =
+  "https://www.youtube.com/embed/rq6PJb85C_M?autoplay=1&mute=1&loop=1&playlist=rq6PJb85C_M&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&fs=0&iv_load_policy=3";
 
 const initialPanel = {
   selection: null,
@@ -72,6 +75,23 @@ export default function Lab() {
         </div>
       </header>
 
+      {/* YOUTUBE BANNER */}
+      <section className="banner-section">
+        <div className="banner-container">
+          <iframe
+            className="banner-iframe"
+            src={YOUTUBE_EMBED}
+            title="AnaSM promo"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen={false}
+            loading="lazy"
+          />
+          {/* Transparent overlay blocks all pointer events on the video */}
+          <div className="banner-overlay" />
+        </div>
+      </section>
+
       {/* CATALOG */}
       <nav className="catalog">
         <div className="catalog-title">CATALOG</div>
@@ -88,25 +108,27 @@ export default function Lab() {
         </div>
       </nav>
 
-      {/* 3D VIEWER */}
-      <main className="landing-viewer">
-        <div className="viewer-box">
-          <LazyMount>
-            <ViewerSwitch
-              key={currentItem ? currentItem.id : "none"}
-              item={currentItem}
-              selection={panelState.selection}
-              setSelection={setSelection}
-              onCameraReady={handleCameraReady}
-            />
-          </LazyMount>
-          <AnatomyPanel
-            state={panelState}
-            dispatch={dispatch}
-            cameraInfo={cameraInfoRef}
-            organId={currentId}
-          />
+      {/* MAIN: VIEWER + SIDEBAR */}
+      <main className="landing-main">
+        <div className="landing-viewer">
+          <div className="viewer-box">
+            <LazyMount>
+              <ViewerSwitch
+                key={currentItem ? currentItem.id : "none"}
+                item={currentItem}
+                selection={panelState.selection}
+                setSelection={setSelection}
+                onCameraReady={handleCameraReady}
+              />
+            </LazyMount>
+          </div>
         </div>
+
+        <InfoSidebar
+          state={panelState}
+          dispatch={dispatch}
+          organId={currentId}
+        />
       </main>
 
       {/* FOOTER */}
