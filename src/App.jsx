@@ -1,6 +1,7 @@
 // src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Lab from "./pages/Lab.jsx";
 import Cardboard from "./pages/Cardboard.jsx";
 import ContentPage from "./pages/ContentPage.jsx";
@@ -68,6 +69,7 @@ export default function App() {
           }
         />
       </Routes>
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
