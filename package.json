@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.3.0",
+    "@vercel/speed-insights": "^2.0.0",
     "prop-types": "^15.8.1",
     "qrcode": "^1.5.4",
     "react": "^19.1.1",
