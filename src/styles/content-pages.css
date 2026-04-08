@@ -1,0 +1,599 @@
+/* ========================= */
+/* CONTENT PAGES (8 xil)      */
+/* ========================= */
+
+/* --- Shared --- */
+.cp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 12px;
+  text-align: center;
+  animation: cp-fadein 0.3s ease;
+}
+
+@keyframes cp-fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cp-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e8f4f2;
+}
+
+.cp-desc {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.cp-hint {
+  font-size: 11px;
+  color: rgba(13,158,143,0.7);
+}
+
+.cp-badge {
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(13,158,143,0.1);
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(13,158,143,0.2);
+  margin-top: 4px;
+}
+
+/* ========================= */
+/* 1. 3D MODEL                */
+/* ========================= */
+
+.cp-3d-viewport {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-3d-cube {
+  width: 56px;
+  height: 56px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cp-3d-spin 6s linear infinite;
+}
+
+@keyframes cp-3d-spin {
+  from { transform: rotateY(0deg) rotateX(15deg); }
+  to   { transform: rotateY(360deg) rotateX(15deg); }
+}
+
+.cp-3d-face {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid rgba(13,158,143,0.5);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--accent-light);
+  background: rgba(13,158,143,0.08);
+  backface-visibility: visible;
+}
+
+.cp-3d-front  { transform: translateZ(28px); }
+.cp-3d-back   { transform: translateZ(-28px) rotateY(180deg); }
+.cp-3d-left   { transform: translateX(-28px) rotateY(-90deg); }
+.cp-3d-right  { transform: translateX(28px) rotateY(90deg); }
+
+.cp-3d-ring {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 1.5px dashed rgba(13,158,143,0.25);
+  border-radius: 50%;
+  animation: cp-3d-ring-spin 12s linear infinite;
+}
+
+@keyframes cp-3d-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ========================= */
+/* 2. VR / AR                 */
+/* ========================= */
+
+.cp-vr-headset {
+  width: 100px;
+  height: 52px;
+  background: rgba(13,158,143,0.12);
+  border: 1.5px solid rgba(13,158,143,0.3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+}
+
+.cp-vr-lens {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(13,158,143,0.5);
+  background: radial-gradient(circle, rgba(62,219,198,0.2) 0%, transparent 70%);
+  animation: cp-vr-pulse 2s ease-in-out infinite;
+}
+
+.cp-vr-lens:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+@keyframes cp-vr-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13,158,143,0.3); }
+  50%      { box-shadow: 0 0 12px 4px rgba(13,158,143,0.15); }
+}
+
+.cp-vr-waves {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cp-vr-waves span {
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 4px;
+  opacity: 0.5;
+  animation: cp-vr-wave 1.2s ease-in-out infinite;
+}
+
+.cp-vr-waves span:nth-child(2) { animation-delay: 0.15s; height: 26px; }
+.cp-vr-waves span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes cp-vr-wave {
+  0%, 100% { transform: scaleY(0.6); opacity: 0.3; }
+  50%      { transform: scaleY(1);   opacity: 0.7; }
+}
+
+.cp-badge-vr {
+  background: rgba(100,50,200,0.1);
+  border-color: rgba(140,80,220,0.25);
+  color: #b080e0;
+}
+
+/* ========================= */
+/* 3. VIDEO DARSLIK           */
+/* ========================= */
+
+.cp-video-player {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(13,158,143,0.2);
+}
+
+.cp-video-screen {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #080e12 0%, #0d1820 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-video-play {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  padding-left: 3px;
+  box-shadow: 0 0 24px rgba(13,158,143,0.3);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.cp-video-play:hover {
+  transform: scale(1.1);
+}
+
+.cp-video-controls {
+  background: rgba(10,18,24,0.9);
+  padding: 8px 12px;
+}
+
+.cp-video-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cp-video-progress {
+  width: 0%;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+.cp-video-time {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ========================= */
+/* 4. SLAYD                   */
+/* ========================= */
+
+.cp-slayd-deck {
+  position: relative;
+  width: 180px;
+  height: 110px;
+}
+
+.cp-slayd-slide {
+  position: absolute;
+  width: 160px;
+  height: 95px;
+  border-radius: 8px;
+  border: 1px solid rgba(13,158,143,0.2);
+  background: rgba(14,22,30,0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+}
+
+.cp-slayd-bg {
+  top: 0; left: 0;
+  opacity: 0.4;
+  transform: rotate(-3deg);
+}
+
+.cp-slayd-mid {
+  top: 4px; left: 8px;
+  opacity: 0.6;
+  transform: rotate(-1deg);
+}
+
+.cp-slayd-front {
+  top: 8px; left: 16px;
+  opacity: 1;
+  border-color: rgba(13,158,143,0.35);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.cp-slayd-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(13,158,143,0.15);
+  border: 1px solid rgba(13,158,143,0.3);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cp-slayd-line {
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.12);
+}
+
+.cp-slayd-line.w40 { width: 40%; }
+.cp-slayd-line.w50 { width: 50%; }
+.cp-slayd-line.w60 { width: 60%; }
+.cp-slayd-line.w70 { width: 70%; }
+.cp-slayd-line.w80 { width: 80%; }
+
+.cp-slayd-dots {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.cp-slayd-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+
+.cp-slayd-dots span.active {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(13,158,143,0.4);
+}
+
+/* ========================= */
+/* 5. TEST                    */
+/* ========================= */
+
+.cp-test-card {
+  width: 100%;
+  max-width: 280px;
+  border: 1px solid rgba(13,158,143,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.cp-test-q {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(13,158,143,0.1);
+  background: rgba(13,158,143,0.04);
+}
+
+.cp-test-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cp-test-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cp-test-options {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-test-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.cp-test-opt:hover {
+  border-color: rgba(13,158,143,0.3);
+}
+
+.cp-test-letter {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(13,158,143,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.cp-test-line {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+}
+
+/* ========================= */
+/* 6. QIZIQARLI MA'LUMOTLAR   */
+/* ========================= */
+
+.cp-facts-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.cp-facts-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(13,158,143,0.15);
+  border-radius: 10px;
+  background: rgba(13,158,143,0.04);
+  text-align: left;
+}
+
+.cp-facts-bulb {
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.cp-facts-text {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cp-facts-more {
+  justify-content: center;
+  font-size: 11px;
+  color: var(--accent);
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.cp-facts-more:hover {
+  background: rgba(13,158,143,0.08);
+}
+
+/* ========================= */
+/* 7. REFERAT                 */
+/* ========================= */
+
+.cp-referat-doc {
+  width: 160px;
+  border: 1px solid rgba(13,158,143,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(10,18,24,0.8);
+}
+
+.cp-referat-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid rgba(13,158,143,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cp-referat-body {
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cp-referat-line {
+  height: 2.5px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.08);
+}
+
+.cp-referat-line.dim { opacity: 0.5; }
+.cp-referat-line.center { align-self: center; }
+
+.cp-referat-line.w40  { width: 40%; }
+.cp-referat-line.w60  { width: 60%; }
+.cp-referat-line.w70  { width: 70%; }
+.cp-referat-line.w80  { width: 80%; }
+.cp-referat-line.w90  { width: 90%; }
+.cp-referat-line.w100 { width: 100%; }
+
+.cp-referat-footer {
+  padding: 6px 16px;
+  border-top: 1px solid rgba(13,158,143,0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.cp-referat-page {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+/* ========================= */
+/* 8. QUIZ (VARIANTLI MASA)   */
+/* ========================= */
+
+.cp-quiz-board {
+  width: 100%;
+  max-width: 280px;
+  border: 1px solid rgba(13,158,143,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cp-quiz-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(13,158,143,0.06);
+  border-bottom: 1px solid rgba(13,158,143,0.1);
+}
+
+.cp-quiz-timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-light);
+}
+
+.cp-quiz-clock {
+  font-size: 16px;
+}
+
+.cp-quiz-score {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cp-quiz-variants {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-quiz-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cp-quiz-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(13,158,143,0.1);
+  border: 1px solid rgba(13,158,143,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.cp-quiz-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.cp-quiz-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(13,158,143,0.25);
+  background: rgba(13,158,143,0.04);
+  transition: all 0.2s;
+}
+
+.cp-quiz-dot:hover {
+  border-color: var(--accent);
+  background: rgba(13,158,143,0.15);
+}
