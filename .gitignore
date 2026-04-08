@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 
-# GLB models (too large for GitHub, host separately)
-public/model/
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -25,3 +22,6 @@ public/model/
 *.njsproj
 *.sln
 *.sw?
+.claude
+../clade
+
