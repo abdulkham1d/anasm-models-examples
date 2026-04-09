@@ -92,7 +92,7 @@ export default function Lab() {
       {/* HEADER */}
       <header className="landing-header">
         <div className="landing-brand">
-          <span className="landing-logo">AnaSM.uz</span>
+          <span className="landing-logo">AnaSM</span>
           <span className="landing-subtitle">O'zbek tilidagi odam anatomiyasi</span>
         </div>
       </header>
@@ -183,7 +183,7 @@ export default function Lab() {
 
       {/* FOOTER */}
       <footer className="landing-footer">
-        <span>Ozbek tilidagi inson tanasi morfologiyasi</span>
+        <span>Ozbek tilidagi inson tanasi morfologiyasi </span>
       </footer>
     </div>
   );
