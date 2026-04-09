@@ -183,7 +183,7 @@ export default function Lab() {
 
       {/* FOOTER */}
       <footer className="landing-footer">
-        <span>Ozbek tilidagi inson tanasi morfologiyasi </span>
+        <span>Ozbek tilidagi inson tanasi morfologiyasi</span>
       </footer>
     </div>
   );
