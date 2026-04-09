@@ -10,8 +10,6 @@ import "../styles/app.css";
 import "../styles/content-pages.css";
 
 const STORAGE_KEY = "anasm_3d_unlocked";
-const YOUTUBE_EMBED =
-  "https://www.youtube.com/embed/rq6PJb85C_M?autoplay=1&mute=1&loop=1&playlist=rq6PJb85C_M&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&fs=0&iv_load_policy=3";
 
 const initialPanel = {
   selection: null,
@@ -99,19 +97,15 @@ export default function Lab() {
         </div>
       </header>
 
-      {/* YOUTUBE BANNER */}
+      {/* BANNER */}
       <section className="banner-section">
         <div className="banner-container">
-          <iframe
-            className="banner-iframe"
-            src={YOUTUBE_EMBED}
-            title="AnaSM promo"
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen={false}
+          <img
+            className="banner-gif"
+            src="/banner.gif"
+            alt="AnaSM 3D Anatomy"
             loading="lazy"
           />
-          <div className="banner-overlay" />
         </div>
       </section>
 
@@ -189,7 +183,7 @@ export default function Lab() {
 
       {/* FOOTER */}
       <footer className="landing-footer">
-        <span>Qismni bosing &bull; Ma'lumot oling &bull; 3D modelni aylantiring</span>
+        <span>Ozbek tilidagi inson tanasi morfologiyasi</span>
       </footer>
     </div>
   );
