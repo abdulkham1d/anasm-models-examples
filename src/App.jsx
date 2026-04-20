@@ -70,6 +70,7 @@ export default function App() {
           }
         />
       </Routes>
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
